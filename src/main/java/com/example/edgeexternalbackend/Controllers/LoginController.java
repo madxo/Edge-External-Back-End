@@ -2,29 +2,30 @@ package com.example.edgeexternalbackend.Controllers;
 
 import com.example.edgeexternalbackend.Constants.LoginConstants;
 import com.example.edgeexternalbackend.Modal.User;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 
-@RestController
-@RequestMapping("/login")
+
+@Component
+@Path("/login")
 public class LoginController {
 
-    @GetMapping("")
-    public ResponseEntity<?> Login(@RequestParam String email, @RequestParam String password) {
+    @GET
+    @Produces(MediaType.APPLICATION_JSON_VALUE)
+    public Response Login(@QueryParam("email") String email, @QueryParam("password") String password) {
         User user = LoginConstants.USER_MAP.get(email);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User does not exist");
+            return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
         }
         if (!user.getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect credentials provided");
+            return Response.status(Response.Status.BAD_REQUEST).entity("Incorrect credentials provided").build();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return Response.ok().entity(user).build();
     }
 }
