@@ -9,7 +9,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-
+import org.springframework.util.StringUtils;
 
 
 @Component
@@ -19,7 +19,11 @@ public class LoginController {
     @GET
     @Produces(MediaType.APPLICATION_JSON_VALUE)
     public Response Login(@QueryParam("email") String email, @QueryParam("password") String password) {
-        User user = LoginConstants.USER_MAP.get(email);
+        if (email == null || password == null || !StringUtils.hasLength(email.trim()) ||
+                !StringUtils.hasLength(password.trim())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Please provide a valid email and password").build();
+        }
+        User user = LoginConstants.USER_MAP.get(email.toLowerCase());
         if (user == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("User does not exist").build();
         }
