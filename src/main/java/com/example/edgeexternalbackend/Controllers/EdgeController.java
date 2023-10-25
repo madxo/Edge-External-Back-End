@@ -33,7 +33,7 @@ public class EdgeController {
     @Produces(MediaType.APPLICATION_JSON_VALUE)
     public Response rephrase(@QueryParam("citation") String citation,
                              @QueryParam("externalEdgeInd") boolean externalEdgeInd) {
-        if (!StringUtils.hasLength(citation)) {
+        if (citation == null || !StringUtils.hasLength(citation.trim())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Please provide a text").build();
         }
         String apiUrl;
