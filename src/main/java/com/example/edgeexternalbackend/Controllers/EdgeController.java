@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 @Component
 @Path("rephrase")
@@ -43,7 +44,8 @@ public class EdgeController {
             apiUrl = edgeApiProperties.getInternalEdgeApiUrl();
         }
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet(apiUrl);
+            String encodedCitation = URLEncoder.encode(citation, "UTF-8");
+            HttpGet request = new HttpGet(apiUrl + "?data=" + encodedCitation);
             HttpResponse response = httpClient.execute(request);
             if (response.getStatusLine().getStatusCode() == 200) {
                 String responseContent = EntityUtils.toString(response.getEntity());
